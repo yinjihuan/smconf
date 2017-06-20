@@ -1,5 +1,7 @@
 Smconf专注于分布式环境下配置的统一管理
 
+![架构图](https://github.com/yinjihuan/smconf/blob/master/images/jiagou.png) 
+
 # 目标
 - 提供配置的统一管理
 - 多个环境（生产环境：prod, 线上测试环境：online, 线下测试环境：test, 开发环境：dev）
