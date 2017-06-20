@@ -8,11 +8,19 @@ Smconf专注于分布式环境下配置的统一管理
 - web后台配置管理
 - 配置修改后实时同步到使用的客户端
 - 无缝集成spring和spring boot项目
+
 # 文档
 - http://cxytiandi.com/blog/user/1/tag/smconf/1
+
 # 案列
 - 普通spring项目 https://github.com/yinjihuan/smconf/tree/master/cxytiandi-conf/cxytiandi-conf-demo
 - spring boot项目 https://github.com/yinjihuan/smconf/tree/master/cxytiandi-conf/cxytiandi-conf-springboot-demo
 
+# 配置管理
+![配置列表](https://github.com/yinjihuan/smconf/blob/master/images/home.png) 
+ --
+![配置修改](https://github.com/yinjihuan/smconf/blob/master/images/update.png) 
+ --
+![配置历史记录](https://github.com/yinjihuan/smconf/blob/master/images/history.png) 
 # 作者
 - 尹吉欢 1304489315@qq.com
