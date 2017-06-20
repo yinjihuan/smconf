@@ -8,6 +8,7 @@ Smconf专注于分布式环境下配置的统一管理
 - web后台配置管理
 - 配置修改后实时同步到使用的客户端
 - 无缝集成spring和spring boot项目
+- web后台支持不同账号管理不同环境的配置
 
 # 文档
 - http://cxytiandi.com/blog/user/1/tag/smconf/1
