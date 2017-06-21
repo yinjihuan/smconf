@@ -1,4 +1,4 @@
-Smconf专注于分布式环境下配置的统一管理
+Smconf专注于分布式环境下配置的统一管理,目前只支持java
 
 ![架构图](https://github.com/yinjihuan/smconf/blob/master/images/jiagou.png) 
 
