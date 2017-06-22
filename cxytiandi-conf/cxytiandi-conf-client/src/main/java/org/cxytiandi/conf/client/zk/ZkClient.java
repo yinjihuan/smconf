@@ -35,7 +35,6 @@ public class ZkClient {
 	 */
 	public synchronized static ZkClient getInstance(String url) {
 		if (client == null) {
-			doShutDownWork();
 			client = CuratorFrameworkFactory.builder()
 					.connectString(url)
 					.sessionTimeoutMs(1000) //可以解决程序退出后临时节点没删除的问题，尽快删除
@@ -44,24 +43,6 @@ public class ZkClient {
 			client.start();
 		}
 		return ZkClientChild.instance;
-	}
-	
-	/**
-	 * 系统正常停止时，关闭client,可以解决程序退出后临时节点没删除的问题<br>
-	 * 注意：kill -9 不会触发<br>
-	 * 1）程序正常退出 <br>
-	 * 2）使用System.exit() <br>
-	 * 3）终端使用Ctrl+C触发的中断 <br>
-	 * 4）系统关闭 <br>
-	 * 5）使用Kill pid命令干掉进程<br>
-	 * @author yinjihuan
-	 */
-	private static void doShutDownWork() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				client.close();
-			}
-		});
 	}
 	
 	/**

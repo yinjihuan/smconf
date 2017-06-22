@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.cxytiandi.conf.client.common.Constant;
+import org.cxytiandi.conf.client.util.CommonUtil;
 import org.cxytiandi.conf.web.common.LoginUserInfoUtils;
 
 public class HTTPBasicAuthorizeFilter implements Filter {
@@ -57,7 +58,7 @@ public class HTTPBasicAuthorizeFilter implements Filter {
 			
 			if (uri.contains("/rest/conf/")) {
 				String token = req.getHeader("Authorization");
-				if (StringUtils.isNotBlank(token) && token.equals("58eef205c24381110802b011")) {
+				if (StringUtils.isNotBlank(token) && token.equals(CommonUtil.getRestApiToken())) {
 					chain.doFilter(request, response);
 				} else {
 					resp.getWriter().write("无权限操作");  

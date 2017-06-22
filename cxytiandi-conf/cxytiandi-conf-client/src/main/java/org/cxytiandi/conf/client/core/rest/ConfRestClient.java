@@ -25,8 +25,6 @@ public class ConfRestClient {
 	
 	private static RestTemplate restTemplate;
 
-	private static final String TOKEN = "58eef205c24381110802b011";
-	
     static {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setReadTimeout(5000);
@@ -85,7 +83,7 @@ public class ConfRestClient {
 		for (String base : restApiUrls) {
 			try {
 				HttpHeaders requestHeaders = new HttpHeaders();
-			    requestHeaders.add("Authorization", TOKEN);
+			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
 			    HttpEntity<String> requestEntity = new HttpEntity<String>(null, requestHeaders);
 			    return restTemplate.exchange(base + url, HttpMethod.GET, requestEntity, ResponseDatas.class, urlVariables).getBody();
 			} catch (Exception e) {
@@ -131,7 +129,7 @@ public class ConfRestClient {
 		for (String base : restApiUrls) {
 			try {
 				HttpHeaders requestHeaders = new HttpHeaders();
-			    requestHeaders.add("Authorization", TOKEN);
+			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
 			    HttpEntity<Conf> requestEntity = new HttpEntity<Conf>(conf, requestHeaders);
 			    return restTemplate.exchange(base + "/rest/conf", HttpMethod.POST, requestEntity, ResponseDatas.class).getBody().getStatus();
 			} catch (Exception e) {

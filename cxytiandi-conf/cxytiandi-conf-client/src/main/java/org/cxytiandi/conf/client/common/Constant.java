@@ -62,4 +62,10 @@ public final class Constant {
 	 * client项目暴露的端口
 	 */
 	public static final String SERVER_PORT = "server.port";
+	
+	/**
+	 * rest api token
+	 */
+	public static final String REST_API_TOKEN = "smconf.rest.token";
+	
 }

@@ -141,4 +141,23 @@ public class CommonUtil {
 			field.set(bean, value);
 		}
 	}
+	
+	/**
+	 * 获取rest api token
+	 * @author yinjihuan
+	 * @return
+	 */
+	public static String getRestApiToken() {
+		String token = System.getProperty(Constant.REST_API_TOKEN);
+		if (StringUtils.hasText(token)) {
+			return token;
+		}
+		
+		token = ProUtils.getProperty(Constant.REST_API_TOKEN);
+		if (StringUtils.hasText(token)) {
+			return token;
+		}
+		
+		return "58eef205c24381110802b011";
+	}
 }
