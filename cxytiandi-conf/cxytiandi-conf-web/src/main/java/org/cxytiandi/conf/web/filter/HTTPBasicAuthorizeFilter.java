@@ -55,7 +55,6 @@ public class HTTPBasicAuthorizeFilter implements Filter {
 			}
 			
 		} else {
-			
 			if (uri.contains("/rest/conf/")) {
 				String token = req.getHeader("Authorization");
 				if (StringUtils.isNotBlank(token) && token.equals(CommonUtil.getRestApiToken())) {
