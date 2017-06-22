@@ -26,3 +26,6 @@ Smconf专注于分布式环境下配置的统一管理,目前只支持java
 # 作者
 - 尹吉欢 1304489315@qq.com
 - 博客 http://cxytiandi.com/blogs/yinjihuan
+
+# 历史版本下载
+- 1.0 https://github.com/yinjihuan/smconf/tree/master/release/1.0
