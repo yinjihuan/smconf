@@ -2,6 +2,8 @@ package org.cxytiandi.conf.client.util;
 
 import java.lang.reflect.Field;
 import java.util.List;
+
+import org.cxytiandi.conf.client.common.Constant;
 import org.cxytiandi.conf.client.common.EnvConstants;
 import org.cxytiandi.conf.client.core.rest.ConfRestClient;
 import org.cxytiandi.conf.client.zk.ZkClient;
@@ -34,12 +36,12 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static ZkClient getZkClient() {
-		String zkUrl = System.getProperty("zookeeper.url");
+		String zkUrl = System.getProperty(Constant.ZK_URL);
 		if (zkUrl != null) {
 			return ZkClient.getInstance(zkUrl);
 		}
 		
-		zkUrl = ProUtils.getProperty("zookeeper.url");
+		zkUrl = ProUtils.getProperty(Constant.ZK_URL);
 		if (zkUrl == null) {
 			throw new RuntimeException("请在application.properties中配置zookeeper.url");
 		}
@@ -52,18 +54,18 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String getEnv() {
-		String systemProperty = System.getProperty("spring.profiles.active");
+		String systemProperty = System.getProperty(Constant.PROFILE_ACTIVE);
 		if (StringUtils.hasText(systemProperty)) {
 			return systemProperty;
 		}
 		
-		String env = ProUtils.getProperty("spring.profiles.active");
+		String env = ProUtils.getProperty(Constant.PROFILE_ACTIVE);
 		if (!StringUtils.hasText(env)) {
 			env = EnvConstants.DEV;
 		}
 		
 		if (!EnvConstants.ENVS.contains(env)) {
-			throw new RuntimeException("spring.profiles.active可选值只有：" + EnvConstants.ENVS.toString());
+			throw new RuntimeException(Constant.PROFILE_ACTIVE + "可选值只有：" + EnvConstants.ENVS.toString());
 		}
 		
 		return env;
@@ -75,13 +77,13 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String getServerPort() {
-		String port = System.getProperty("server.port");
+		String port = System.getProperty(Constant.SERVER_PORT);
 		if (StringUtils.hasText(port)) {
 			return port;
 		}
-		port = ProUtils.getProperty("server.port");
+		port = ProUtils.getProperty(Constant.SERVER_PORT);
 		if (!StringUtils.hasText(port)) {
-			throw new RuntimeException("请配置server.port用来区分一台机器上的多个服务");
+			throw new RuntimeException("请配置" + Constant.SERVER_PORT + "用来区分一台机器上的多个服务");
 		}
 		return port;
 	}
@@ -92,11 +94,11 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String getLocalIp() {
-		String ip = System.getProperty("server.ip");
+		String ip = System.getProperty(Constant.SERVER_IP);
 		if (StringUtils.hasText(ip)) {
 			return ip;
 		}
-		ip = ProUtils.getProperty("server.ip");
+		ip = ProUtils.getProperty(Constant.SERVER_IP);
 		if (StringUtils.hasText(ip)) {
 			return ip;
 		}

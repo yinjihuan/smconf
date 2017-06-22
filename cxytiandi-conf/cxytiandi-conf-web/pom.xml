@@ -11,6 +11,7 @@
 	<artifactId>cxytiandi-conf-web</artifactId>
 	<name>cxytiandi-conf-web</name>
 	<url>http://maven.apache.org</url>
+	<version>1.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

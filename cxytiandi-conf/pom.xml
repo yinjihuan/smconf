@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.cxytiandi</groupId>
+	<groupId>org.cxytiandi</groupId>
 	<artifactId>cxytiandi-conf</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>
@@ -10,8 +10,8 @@
 		<module>cxytiandi-conf-web</module>
 		<module>cxytiandi-conf-client</module>
 		<module>cxytiandi-conf-demo</module>
-    <module>cxytiandi-conf-springboot-demo</module>
-  </modules>
+   	    <module>cxytiandi-conf-springboot-demo</module>
+    </modules>
 
 	<properties>
 		<cxytiandi.conf.version>1.0</cxytiandi.conf.version>

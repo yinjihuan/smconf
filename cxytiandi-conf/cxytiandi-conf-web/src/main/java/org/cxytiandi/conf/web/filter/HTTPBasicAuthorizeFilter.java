@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
+import org.cxytiandi.conf.client.common.Constant;
 import org.cxytiandi.conf.web.common.LoginUserInfoUtils;
 
 public class HTTPBasicAuthorizeFilter implements Filter {
@@ -39,7 +40,7 @@ public class HTTPBasicAuthorizeFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest)request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-		req.setAttribute("projectName", System.getProperty("projectName") == null ? "猿天地" : System.getProperty("projectName"));
+		req.setAttribute("projectName", System.getProperty(Constant.SMCONF_PROJECT_NAME) == null ? "猿天地" : System.getProperty(Constant.SMCONF_PROJECT_NAME));
 		String path = req.getContextPath();
 		String uri = req.getRequestURI().toLowerCase();
 		if (!containsWhite(uri)) {

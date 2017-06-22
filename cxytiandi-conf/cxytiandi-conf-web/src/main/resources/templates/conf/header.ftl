@@ -19,7 +19,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li>
-            <a href="../user/logout">文档</a>
+            <a target="_blank" href="https://github.com/yinjihuan/smconf">文档</a>
           </li>
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">

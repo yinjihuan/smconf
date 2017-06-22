@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+
+import org.cxytiandi.conf.client.common.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class ProUtils {
 			inputStream.close();
 		} catch (Exception e) {
 			//如果环境变量中设置了则可以不用cxytiandi-conf.properties中的配置
-			String zkUrl = System.getProperty("zookeeper.url");
+			String zkUrl = System.getProperty(Constant.ZK_URL);
 			if (zkUrl == null) {
 				LOGGER.error("加载application.properties文件出错", e);
 				throw new RuntimeException("加载application.properties文件出错", e);

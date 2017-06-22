@@ -32,4 +32,34 @@ public final class Constant {
 	 * 所以需要循环检查是否没有，如果超过了一定的检测时间则认为这个节点是存在的临时节点
 	 */
 	public static final String ZK_CHECK_TEMP_TIME = "zookeeper.check.temp.time";
+	
+	/**
+	 * 修改日志显示条数
+	 */
+	public static final String SMCONF_LOG_LIMIT = "smconf.log.limit";
+	
+	/**
+	 * web后台项目名称
+	 */
+	public static final String SMCONF_PROJECT_NAME = "smconf.projectName";
+	
+	/**
+	 * zookeeper 链接地址
+	 */
+	public static final String ZK_URL = "zookeeper.url";
+	
+	/**
+	 * 运行环境
+	 */
+	public static final String PROFILE_ACTIVE = "spring.profiles.active";
+	
+	/**
+	 * client项目所在的机器ip
+	 */
+	public static final String SERVER_IP = "server.ip";
+	
+	/**
+	 * client项目暴露的端口
+	 */
+	public static final String SERVER_PORT = "server.port";
 }
