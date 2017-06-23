@@ -1,9 +1,8 @@
 package org.cxytiandi.conf.client.core.rest;
 
 import java.util.Date;
-
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -14,8 +13,8 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@Builder
 @ToString
+@NoArgsConstructor
 public class Conf {
 	private String id;
 	

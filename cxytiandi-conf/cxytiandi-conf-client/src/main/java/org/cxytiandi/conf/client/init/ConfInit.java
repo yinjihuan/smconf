@@ -19,6 +19,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +31,7 @@ import org.springframework.util.StringUtils;
  *
  */
 @Component
+@Configuration
 public class ConfInit implements ApplicationContextAware, InitializingBean {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfInit.class);
@@ -136,14 +138,13 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 					String desc = confField.value();
 					String key = field.getName();
 					Object value = ReflectUtils.callGetMethod(key, confBean);
-					Conf conf = Conf.builder()
-								.env(CommonUtil.getEnv())
-								.systemName(systemName)
-								.confFileName(fileName)
-								.key(key)
-								.value(value)
-								.desc(desc)
-								.build();
+					Conf conf = new Conf();
+					conf.setEnv(CommonUtil.getEnv());
+					conf.setSystemName(systemName);
+					conf.setConfFileName(fileName);
+					conf.setKey(key);
+					conf.setValue(value);
+					conf.setDesc(desc);
 	            	initConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
 				}
             	
