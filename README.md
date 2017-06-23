@@ -33,7 +33,7 @@ Smconf专注于分布式环境下配置的统一管理
 - 1.0 https://github.com/yinjihuan/smconf/tree/master/release/1.0
 
 # FAQ
- --
+
 ### 整合dubbox 2.84报错？
 ```
 Caused by: java.lang.NoSuchMethodError: org.apache.curator.utils.PathUtils.validatePath(Ljava/lang/String;)Ljava/lang/String;
