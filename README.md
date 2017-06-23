@@ -31,3 +31,28 @@ Smconf专注于分布式环境下配置的统一管理
 
 # 历史版本下载
 - 1.0 https://github.com/yinjihuan/smconf/tree/master/release/1.0
+
+# FAQ
+
+### 整合dubbox 2.84报错？
+```
+Caused by: java.lang.NoSuchMethodError: org.apache.curator.utils.PathUtils.validatePath(Ljava/lang/String;)Ljava/lang/String;
+```
+这个错主要是由于dubbo也带了zk的客户端，jar包冲突导致的，所以我们将dubbo旧的版本排除掉
+```
+<dependency>
+		<groupId>com.alibaba</groupId>
+		<artifactId>dubbo</artifactId>
+		<exclusions>
+				<exclusion>
+					<groupId>org.apache.curator</groupId>
+					<artifactId>curator-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.curator</groupId>
+					<artifactId>curator-framework</artifactId>
+				</exclusion>
+		</exclusions>
+</dependency>
+
+```
