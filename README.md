@@ -79,4 +79,32 @@ public static void main(String[] args) {
 		LOGGER.error("项目启动异常", e);
 	}
 }
+
+application.properties文件中使用$符号取值
+
+spring.dubbo.application.name=${spring.dubbo.applicationName}
+spring.dubbo.registry.address=${spring.dubbo.registryAddress}
+spring.dubbo.protocol.name=${spring.dubbo.protocolName}
+spring.dubbo.protocol.port=${spring.dubbo.protocolPort}
+
+/**
+ * dubbo配置信息
+ * @author yinjihuan
+ *
+ */
+@CxytianDiConf(system=Constant.SYSTEM,env=true, prefix="spring.dubbo")
+public class DubboConf {
+	
+	@ConfField("zookeeper地址")
+	private String registryAddress = "zookeeper://192.168.10.47:2181";
+	
+	@ConfField("dubbo服务名称")
+	private String applicationName = Constant.SYSTEM;
+	
+	@ConfField("dubbo暴露协议")
+	private String protocolName = "dubbo";
+	
+	@ConfField("dubbo暴露端口")
+	private Integer protocolPort = 20881;
+}
 ```
