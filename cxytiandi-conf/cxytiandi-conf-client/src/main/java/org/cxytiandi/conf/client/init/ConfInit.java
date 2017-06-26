@@ -63,7 +63,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 		return confNameLocalConfDataMap.get(key);
 	}
 	
-	private void check(Map<String, Object> beanMap) {
+	public void check(Map<String, Object> beanMap) {
 		if (beanMap != null && !beanMap.isEmpty()) {
             for (Object confBean : beanMap.values()) {
             	String className = confBean.getClass().getName();
@@ -112,7 +112,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
         }
 	}
 	
-	private void init(Map<String, Object> beanMap) {
+	public void init(Map<String, Object> beanMap) {
 		
         if (beanMap != null && !beanMap.isEmpty()) {
             for (Object confBean : beanMap.values()) {

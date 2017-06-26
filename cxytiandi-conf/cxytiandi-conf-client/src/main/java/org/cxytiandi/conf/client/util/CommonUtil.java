@@ -85,6 +85,10 @@ public class CommonUtil {
 		if (!StringUtils.hasText(port)) {
 			throw new RuntimeException("请配置" + Constant.SERVER_PORT + "用来区分一台机器上的多个服务");
 		}
+		//如果属性文件中配置的值是${spring.port}
+		if (port.startsWith("$")) {
+			port = System.getProperty(port.substring(2, port.length() - 1));
+		}
 		return port;
 	}
 	
