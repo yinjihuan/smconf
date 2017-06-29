@@ -54,7 +54,7 @@ public class Conf {
 	 * 配置Value
 	 */
 	@Field("value")
-	private Object value;
+	private String value;
 	
 	/**
 	 * 描述
