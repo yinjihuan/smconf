@@ -10,6 +10,7 @@ Smconf专注于分布式环境下配置的统一管理
 - web后台配置管理
 - 配置修改后实时同步到使用的客户端
 - 无缝集成spring和spring boot项目
+- 非spring项目中也可以使用
 - web后台支持不同账号管理不同环境的配置
 - 支持水平扩容，负载，部署多个server，client自动发现
 # 文档
@@ -107,4 +108,24 @@ public class DubboConf {
 	@ConfField("dubbo暴露端口")
 	private Integer protocolPort = 20881;
 }
+```
+### 非spring环境的java项目中怎么使用？
+只需要在程序启动前加载配置即可，但是如果在非spring的环境中使用，获取配置就只能从ConfApplication中获取，不能通过@Autowired注入来使用，因为你没有spring
+
+```
+import org.cxytiandi.conf.client.ConfApplication;
+import org.cxytiandi.conf.client.init.SmconfInit;
+import org.cxytiandi.conf.demo.conf.DbConf;
+/**
+ * 非Spring环境中使用
+ * @author yinjihuan
+ *
+ */
+public class NoSpringEnvDemo {
+	public static void main(String[] args) {
+		SmconfInit.init("org.cxytiandi.conf.demo.conf");
+		System.out.println(ConfApplication.getBean(DbConf.class).getMaxTime());
+	}
+}
+
 ```
