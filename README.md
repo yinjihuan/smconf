@@ -13,6 +13,7 @@ Smconf专注于分布式环境下配置的统一管理
 - 非spring项目中也可以使用
 - web后台支持不同账号管理不同环境的配置
 - 支持水平扩容，负载，部署多个server，client自动发现
+- 支持用户自定义配置修改回调接口做扩展
 # 文档
 - http://cxytiandi.com/blog/user/1/tag/smconf/1
 
@@ -129,3 +130,9 @@ public class NoSpringEnvDemo {
 }
 
 ```
+### 不想使用配置中心的配置怎么办？
+有的时候我们在开发环境下，有多个开发人员，你改改配置我改改配置，导致每个人的都不一样，开发环境下需要调试的话你可以自己在本地搭建一套Smconf
+
+还有一种办法就是只用本地配置文件里的默认值，这样就不用去配置中心加载配置了。
+只需要在application.properties中添加smconf.data.status=local即可，默认为加载远程配置
+也可以通过-Dsmconf.data.status=local来设置
