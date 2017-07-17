@@ -101,15 +101,15 @@ public class ConfRestClient {
 	static List<String> apis = Lists.newArrayList();
 	/**
 	 * 获取配置API提供的服务地址<br>
-	 * 如果返回null 则说明链接zk出了异常，默认用上次缓存的配置信息<br>
-	 * 如果size==0 则说明注册中心确实没有提供方，抛出异常
 	 * @author yinjihuan
 	 * @return
 	 */
 	private List<String> getRestApiServers() {
 		List<String> restApiUrls = CommonUtil.getRestServers();
-		if (restApiUrls == null) {
-			restApiUrls = apis;
+		if (restApiUrls == null || restApiUrls.size() == 0) {
+			if (apis.size() > 0) {
+				return apis;
+			}
 		}
 		if (restApiUrls.size() == 0) {
 			throw new RuntimeException("找不到配置服务提供者，请先启动配置管理中心");
