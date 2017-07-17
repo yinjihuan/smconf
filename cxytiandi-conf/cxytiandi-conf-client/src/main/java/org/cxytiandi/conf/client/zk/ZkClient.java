@@ -1,6 +1,8 @@
 package org.cxytiandi.conf.client.zk;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.NodeCache;
@@ -19,6 +21,9 @@ import com.google.common.collect.Lists;
 public class ZkClient {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ZkClient.class);
+	
+	//是否第一次注册，在需要启动时加载配置的时候会注册2次
+	private static AtomicBoolean isFirstReg = new AtomicBoolean(true);
 	
 	private static class ZkClientChild {
 		private static ZkClient instance = new ZkClient();
@@ -80,10 +85,10 @@ public class ZkClient {
 	 */
 	public void createServerList(String address) {
 		doCreateServerList(client, address);
-		//addRetryServerListener(address);
+		addRetryServerListener(address);
 	}
 
-	private void doCreateServerList(CuratorFramework client, String address) {
+	public void doCreateServerList(CuratorFramework client, String address) {
 		try {
 			Stat stat = client.checkExists().forPath(Constant.ZK_SERVER_LIST_PATH);
 			if (stat == null) {
@@ -124,10 +129,14 @@ public class ZkClient {
 					Stat stat = client.checkExists().forPath(path);
 					if (stat == null) {
 						client.create().withMode(mode).forPath(path);
+						isFirstReg.compareAndSet(true, false);
 						break;
 					}
-					Thread.sleep(1000);
-					LOGGER.info("注册节点中..." + path);
+					//首次注册才需要判断，否则就证明节点在之前已经注册过了，解决项目中注册2次的问题
+					if (isFirstReg.get()) {
+						Thread.sleep(1000);
+						LOGGER.info("注册节点中..." + path);
+					}
 				}
 			} else {
 				Stat stat = client.checkExists().forPath(path);
@@ -184,7 +193,7 @@ public class ZkClient {
 	 * @param value
 	 */
 	public void addRetryServerListener(String value) {
-		ServerConnectionStateListener stateListener = new ServerConnectionStateListener(value, "REG_SERVER");
+		ServerConnectionStateListener stateListener = new ServerConnectionStateListener(value, "REG_SERVER", this);
 		client.getConnectionStateListenable().addListener(stateListener);
 	}
 	

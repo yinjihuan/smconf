@@ -1,8 +1,10 @@
 package org.cxytiandi.conf.client.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import org.cxytiandi.conf.client.ConfApplication;
+import org.cxytiandi.conf.client.annotation.CxytianDiConf;
 import org.cxytiandi.conf.client.core.rest.Conf;
 import org.cxytiandi.conf.client.core.rest.ConfRestClient;
 import org.cxytiandi.conf.client.util.CommonUtil;
@@ -13,6 +15,9 @@ public class RefreshConfCallBackImpl implements RefreshConfCallBack {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RefreshConfCallBackImpl.class);
 	
 	public void call(String path) {
+		if (CommonUtil.getLocalDataStatus().equals("local")) {
+			return;
+		}
 		LOGGER.info(path + " update...");
 		String[] values = path.split("/");
 		String env = values[2];
@@ -22,6 +27,10 @@ public class RefreshConfCallBackImpl implements RefreshConfCallBack {
 		if (confBean == null) {
 			return;
 		}
+		
+		CxytianDiConf cxytianDiConf = confBean.getClass().getAnnotation(CxytianDiConf.class);
+    	boolean isEnv = cxytianDiConf.env();
+    	String prefix = cxytianDiConf.prefix();
 		Field[] fieds = confBean.getClass().getDeclaredFields();
 		
 		ConfRestClient restClient = CommonUtil.getConfRestClient();
@@ -33,8 +42,27 @@ public class RefreshConfCallBackImpl implements RefreshConfCallBack {
 					try {
 						LOGGER.info(field.getName() + "\tOldVlaue:" + field.get(confBean) + "\tNewValue:" + conf.getValue());
 						CommonUtil.setValue(field, confBean, conf.getValue());
+						if (isEnv) {
+							System.setProperty(prefix.equals("") ? "" : prefix + "." + conf.getKey(), conf.getValue().toString());
+						}
 					} catch (Exception e) {
 						LOGGER.error("", e);
+					}
+					break;
+				}
+			}
+		}
+		
+		//设置回调用户自定义方法
+		Class<?>[] inters = confBean.getClass().getInterfaces();
+		if (inters != null && inters.length > 0) {
+			for (Class<?> clz : inters) {
+				if (clz.getSimpleName().equals("SmconfUpdateCallBack")) {
+				    try {
+						Method m1 = confBean.getClass().getDeclaredMethod("reload");
+						m1.invoke(confBean);
+					} catch (Exception e) {
+						LOGGER.error("设置回调用户自定义方法异常", e);
 					}
 					break;
 				}

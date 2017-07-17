@@ -145,7 +145,11 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 					conf.setKey(key);
 					conf.setValue(value);
 					conf.setDesc(desc);
-	            	initConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
+					if (CommonUtil.getLocalDataStatus().equals("local")) {
+						initLocalConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
+					} else {
+						initConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
+					}
 				}
             	
                 localConfDataMap.put(className, confBean);
@@ -154,6 +158,18 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
               
             }
         }
+	}
+	
+	private void initLocalConf(Conf conf, Field field, Object obj, boolean env, String prefix) {
+		try {
+			if (env) {
+	      		System.setProperty(prefix + conf.getKey(), conf.getValue().toString());
+			}
+			CommonUtil.setValue(field, obj, conf.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("", e);
+		}
 	}
 	
 	private void initConf(Conf conf, Field field, Object obj, boolean env, String prefix) {
@@ -173,6 +189,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	  			CommonUtil.setValue(field, obj, result.getValue());
 	  		}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error("", e);
 		}
 	}

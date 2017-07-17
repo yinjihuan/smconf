@@ -164,4 +164,21 @@ public class CommonUtil {
 		
 		return "58eef205c24381110802b011";
 	}
+	
+	/**
+	 * 获取本地配置数据状态（local只加载本地默认配置  remote加载配置中心配置）
+	 * @author yinjihuan
+	 * @return
+	 */
+	public static String getLocalDataStatus() {
+		String status = System.getProperty(Constant.DATA_STATUS);
+		if (StringUtils.hasText(status)) {
+			return status;
+		}
+		status = ProUtils.getProperty(Constant.DATA_STATUS);
+		if (StringUtils.hasText(status)) {
+			return status;
+		}
+		return "remote";
+	}
 }

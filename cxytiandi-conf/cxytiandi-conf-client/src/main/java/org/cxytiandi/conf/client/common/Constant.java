@@ -68,4 +68,9 @@ public final class Constant {
 	 */
 	public static final String REST_API_TOKEN = "smconf.rest.token";
 	
+	/**
+	 * 获取本地配置数据状态（local只加载本地默认配置  remote加载配置中心配置）
+	 */
+	public static final String DATA_STATUS = "smconf.data.status";
+	
 }

@@ -10,17 +10,19 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 public class ServerConnectionStateListener implements ConnectionStateListener {
 	private String value;
 	private String type;
+	private ZkClient zkClient;
 
-	public ServerConnectionStateListener(String value, String type) {
+	public ServerConnectionStateListener(String value, String type, ZkClient zkClient) {
 		this.value = value;
 		this.type = type;
+		this.zkClient = zkClient;
 	}
 
 	public void stateChanged(CuratorFramework client, ConnectionState newState) {
 		//重新连接成功状态
 		if (newState == ConnectionState.RECONNECTED) {
 			if (type.equals("REG_SERVER")) {
-				
+				zkClient.doCreateServerList(client, value);
 			}
 		}
 	}
