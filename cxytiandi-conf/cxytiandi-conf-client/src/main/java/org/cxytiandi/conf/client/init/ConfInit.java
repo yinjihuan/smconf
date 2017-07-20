@@ -112,7 +112,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
         }
 	}
 	
-	public void init(Map<String, Object> beanMap) {
+	public void init(Map<String, Object> beanMap, boolean isRegWatchNode) {
 		
         if (beanMap != null && !beanMap.isEmpty()) {
             for (Object confBean : beanMap.values()) {
@@ -124,12 +124,14 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
             	String prefix = cxytianDiConf.prefix();
             	boolean env = cxytianDiConf.env();
             	
-            	//初始化需要监控的节点，一个配置文件一个节点
-            	String localIp = CommonUtil.getLocalIp() + ":" + CommonUtil.getServerPort();
-            	ZkClient zkClient = CommonUtil.getZkClient();
-            	zkClient.createNode(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName), CreateMode.PERSISTENT);
-            	zkClient.createNode(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName, localIp + "&" + fileName), CreateMode.EPHEMERAL);
-            	zkClient.monitor(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName,  localIp + "&" + fileName), new RefreshConfCallBackImpl());
+            	if (isRegWatchNode) {
+            		//初始化需要监控的节点，一个配置文件一个节点
+                	String localIp = CommonUtil.getLocalIp() + ":" + CommonUtil.getServerPort();
+                	ZkClient zkClient = CommonUtil.getZkClient();
+                	zkClient.createNode(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName), CreateMode.PERSISTENT);
+                	zkClient.createNode(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName, localIp + "&" + fileName), CreateMode.EPHEMERAL);
+                	zkClient.monitor(CommonUtil.buildPath(Constant.ZK_ROOT_PATH, CommonUtil.getEnv(), systemName,  localIp + "&" + fileName), new RefreshConfCallBackImpl());
+				}
             	
             	Field[] fieds = confBean.getClass().getDeclaredFields();
             	for (Field field : fieds) {
@@ -209,7 +211,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
 		Map<String, Object> beanMap = ctx.getBeansWithAnnotation(CxytianDiConf.class);
 		check(beanMap);
-		init(beanMap);
+		init(beanMap, true);
 	}
 	
 }

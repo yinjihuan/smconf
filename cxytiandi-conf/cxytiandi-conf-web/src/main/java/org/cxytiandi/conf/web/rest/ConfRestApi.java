@@ -40,7 +40,7 @@ public class ConfRestApi {
 	}
 	
 	@GetMapping("/rest/conf/list/{env}/{systemName}")
-	public ResponseData list(@PathVariable("env") String env,  @PathVariable("systemName") String systemName) throws GlobalException {
+	public ResponseData list(@PathVariable("env") String env, @PathVariable("systemName") String systemName) throws GlobalException {
 		try {
 			if (StringUtils.isBlank(env)) {
 				throw new ParamException("env not null");

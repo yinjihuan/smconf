@@ -85,8 +85,13 @@ public class ConfRestClient {
 				HttpHeaders requestHeaders = new HttpHeaders();
 			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
 			    HttpEntity<String> requestEntity = new HttpEntity<String>(null, requestHeaders);
-			    return restTemplate.exchange(base + url, HttpMethod.GET, requestEntity, ResponseDatas.class, urlVariables).getBody();
+			    ResponseDatas resp = restTemplate.exchange(base + url, HttpMethod.GET, requestEntity, ResponseDatas.class, urlVariables).getBody();
+			    System.err.println("status:"+ resp.getStatus());
+			    if (resp.getStatus()) {
+					return resp;
+				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				LOGGER.error(url + " doRequest error", e);
 			}
 		}

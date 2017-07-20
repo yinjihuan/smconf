@@ -29,7 +29,7 @@ public class SmconfInit {
 			}
 			
 			confInit.check(beanMap);
-			confInit.init(beanMap);
+			confInit.init(beanMap, false);
 		} catch (Exception e) {
 			logger.error("", e);
 		}

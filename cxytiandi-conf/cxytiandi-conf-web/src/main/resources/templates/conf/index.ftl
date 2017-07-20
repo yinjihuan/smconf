@@ -7,7 +7,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <style>
     .value_td,.delete {cursor:pointer;}
-    .value_desc {width:300px;}
+    .value_desc,.value_inp {width:300px;}
   </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -62,10 +62,10 @@
 	                	<#if confList??>
 	                		<#list confList as bo>
 		                		<tr>
-		                			<td style="line-height: 100px;">${bo.systemName!}</td>
-		                			<td style="line-height: 100px;">${bo.confFileName!}</td>
-		                			<td style="line-height: 100px;">${bo.key!}</td>
-		                			<td style="line-height: 100px;" class="value_td" status="0">
+		                			<td style="height: 20px;">${bo.systemName!}</td>
+		                			<td style="height: 20px;">${bo.confFileName!}</td>
+		                			<td style="height: 20px;">${bo.key!}</td>
+		                			<td style="height: 20px;width:300px;word-wrap:break-word;word-break:break-all;" class="value_td" status="0">
 		                				<p>${bo.value!}</p>
 		                				<div style="display:none;">
 		                					<input value="${bo.value!}" class="value_inp"/>
@@ -74,9 +74,9 @@
 		                					<input type="button" value="取消" class="cancel_btn"/>
 		                				</div>
 		                			</td>
-		                			<td style="line-height: 100px;">${bo.desc!}</td>
+		                			<td style="height: 20px;">${bo.desc!}</td>
 		                			<td >
-		                				<div style="height:100px;overflow:auto;">
+		                				<div style="height:20px;">
 			                				<#if bo.nodes??>
 		                						<#list bo.nodes as n>
 		                							${n!}<br/>
@@ -84,9 +84,9 @@
 		                					</#if>
 		                				</div>
 		                			</td>
-		                			<td style="line-height: 100px;">${bo.createDate?datetime!}</td>
-		                			<td style="line-height: 100px;">${bo.modifyDate?datetime!}</td>
-		                			<td style="line-height: 100px;">
+		                			<td style="height: 20px;">${bo.createDate?datetime!}</td>
+		                			<td style="height: 20px;">${bo.modifyDate?datetime!}</td>
+		                			<td style="height: 20px;">
 		                				<#if (bo.nodes??) && bo.nodes?size gt 0>
 		                					<a href="javascript:layer.alert('有节点订阅不能删除');" style="color:#ccc;">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
 		                				<#else>
