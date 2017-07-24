@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.cxytiandi.conf.web.domain.Conf;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,6 +29,7 @@ public class ConfRepository {
 		if (StringUtils.isNotBlank(key)) {
 			query.addCriteria(Criteria.where("key").is(key));
 		}
+		query.with(new Sort(Direction.DESC, "id"));
 		return mongoTemplate.find(query, Conf.class);
 	}
 	

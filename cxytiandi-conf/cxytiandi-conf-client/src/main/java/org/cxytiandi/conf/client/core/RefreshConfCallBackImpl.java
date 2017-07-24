@@ -37,30 +37,33 @@ public class RefreshConfCallBackImpl implements RefreshConfCallBack {
 		List<Conf> confs = restClient.list(env, system, confFileName);
 		for (Conf conf : confs) {
         	for (Field field : fieds) {
-				field.setAccessible(true);
-				if (field.getName().equals(conf.getKey())) {
-					try {
-						LOGGER.info(field.getName() + "\tOldVlaue:" + field.get(confBean) + "\tNewValue:" + conf.getValue());
-						CommonUtil.setValue(field, confBean, conf.getValue());
-						if (isEnv) {
-							System.setProperty(prefix.equals("") ? "" : prefix + "." + conf.getKey(), conf.getValue().toString());
-						}
-					} catch (Exception e) {
-						LOGGER.error("", e);
-					}
-					break;
+        		try {
+        			field.setAccessible(true);
+    				if (field.getName().equals(conf.getKey()) && (!field.get(confBean).toString().equals(conf.getValue()))) {
+    					LOGGER.info(field.getName() + "\tOldVlaue:" + field.get(confBean) + "\tNewValue:" + conf.getValue());
+    					CommonUtil.setValue(field, confBean, conf.getValue());
+    					if (isEnv) {
+    						System.setProperty(prefix.equals("") ? conf.getKey() : prefix + "." + conf.getKey(), conf.getValue().toString());
+    					}
+    					//设置回调用户自定义方法
+    					setCallBackMethod(confBean, conf);
+    					break;
+    				}
+				} catch (Exception e) {
+					LOGGER.error("", e);
 				}
 			}
 		}
-		
-		//设置回调用户自定义方法
+	}
+
+	private void setCallBackMethod(Object confBean, Conf conf) {
 		Class<?>[] inters = confBean.getClass().getInterfaces();
 		if (inters != null && inters.length > 0) {
 			for (Class<?> clz : inters) {
 				if (clz.getSimpleName().equals("SmconfUpdateCallBack")) {
 				    try {
-						Method m1 = confBean.getClass().getDeclaredMethod("reload");
-						m1.invoke(confBean);
+						Method m1 = confBean.getClass().getDeclaredMethod("reload", Conf.class);
+						m1.invoke(confBean, conf);
 					} catch (Exception e) {
 						LOGGER.error("设置回调用户自定义方法异常", e);
 					}
