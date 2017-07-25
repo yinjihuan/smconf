@@ -19,11 +19,8 @@ public class ServerConnectionStateListener implements ConnectionStateListener {
 	}
 
 	public void stateChanged(CuratorFramework client, ConnectionState newState) {
-		//重新连接成功状态
-		if (newState == ConnectionState.RECONNECTED) {
-			if (type.equals("REG_SERVER")) {
-				zkClient.doCreateServerList(client, value);
-			}
+		if (type.equals("REG_SERVER")) {
+			zkClient.doCreateServerList(client, value);
 		}
 	}
 

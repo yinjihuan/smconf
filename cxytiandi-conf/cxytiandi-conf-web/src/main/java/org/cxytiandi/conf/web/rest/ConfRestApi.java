@@ -135,4 +135,18 @@ public class ConfRestApi {
 		confService.save(conf);
 		return ResponseData.ok();
 	}
+	
+	@PostMapping("/rest/conf/update/desc")
+	public ResponseData redesc(@RequestBody Conf conf) throws GlobalException {
+		if (StringUtils.isBlank(conf.getId())) {
+			throw new ParamException("id not null");
+		}
+		if (StringUtils.isBlank(conf.getDesc())) {
+			throw new ParamException("desc not null");
+		}
+		Conf newConf = confService.get(conf.getId());
+		newConf.setDesc(conf.getDesc());
+		confService.save(newConf);
+		return ResponseData.ok();
+	}
 }

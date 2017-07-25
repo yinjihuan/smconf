@@ -189,6 +189,10 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	  				System.setProperty(prefix + conf.getKey(), result.getValue().toString());
 	  			}
 	  			CommonUtil.setValue(field, obj, result.getValue());
+	  			if (!result.getDesc().equals(conf.getDesc())) {
+	  				result.setDesc(conf.getDesc());
+	  				confRestClient.updateDesc(result);
+				}
 	  		}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -86,7 +86,6 @@ public class ConfRestClient {
 			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
 			    HttpEntity<String> requestEntity = new HttpEntity<String>(null, requestHeaders);
 			    ResponseDatas resp = restTemplate.exchange(base + url, HttpMethod.GET, requestEntity, ResponseDatas.class, urlVariables).getBody();
-			    System.err.println("status:"+ resp.getStatus());
 			    if (resp.getStatus()) {
 					return resp;
 				}
@@ -139,6 +138,21 @@ public class ConfRestClient {
 			    return restTemplate.exchange(base + "/rest/conf", HttpMethod.POST, requestEntity, ResponseDatas.class).getBody().getStatus();
 			} catch (Exception e) {
 				LOGGER.error(base + " save error", e);
+			}
+		}
+		return false;
+	}
+	
+	public boolean updateDesc(Conf conf) {
+		List<String> restApiUrls = getRestApiServers();
+		for (String base : restApiUrls) {
+			try {
+				HttpHeaders requestHeaders = new HttpHeaders();
+			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
+			    HttpEntity<Conf> requestEntity = new HttpEntity<Conf>(conf, requestHeaders);
+			    return restTemplate.exchange(base + "/rest/conf/update/desc", HttpMethod.POST, requestEntity, ResponseDatas.class).getBody().getStatus();
+			} catch (Exception e) {
+				LOGGER.error(base + " updateDesc error", e);
 			}
 		}
 		return false;
