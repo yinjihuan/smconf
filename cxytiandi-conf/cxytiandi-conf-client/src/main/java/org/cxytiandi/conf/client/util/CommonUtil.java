@@ -109,6 +109,22 @@ public class CommonUtil {
 		String localIp = NetUtils.getLocalAddress().getHostAddress();
 		return localIp;
 	}
+
+	/**
+	 * 获取是否覆盖配置中心的配置状态
+	 * @return
+	 */
+	public static boolean getConfOverwrite() {
+		String status = System.getProperty(Constant.OVERWRITE_STATUS);
+		if (StringUtils.hasText(status)) {
+			return Boolean.parseBoolean(status);
+		}
+		status = ProUtils.getProperty(Constant.OVERWRITE_STATUS);
+		if (StringUtils.hasText(status)) {
+			return Boolean.parseBoolean(status);
+		}
+		return false;
+	}
 	
 	/**
 	 * 拼接路径

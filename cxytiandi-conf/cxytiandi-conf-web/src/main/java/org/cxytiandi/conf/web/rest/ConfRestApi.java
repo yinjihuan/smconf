@@ -136,17 +136,31 @@ public class ConfRestApi {
 		return ResponseData.ok();
 	}
 	
-	@PostMapping("/rest/conf/update/desc")
+	@PostMapping("/rest/conf/update")
 	public ResponseData redesc(@RequestBody Conf conf) throws GlobalException {
 		if (StringUtils.isBlank(conf.getId())) {
 			throw new ParamException("id not null");
 		}
+		if (StringUtils.isBlank(conf.getEnv())) {
+			throw new ParamException("env not null");
+		}
+		if (StringUtils.isBlank(conf.getSystemName())) {
+			throw new ParamException("systemName not null");
+		}
+		if (StringUtils.isBlank(conf.getConfFileName())) {
+			throw new ParamException("confFileName not null");
+		}
+		if (StringUtils.isBlank(conf.getKey())) {
+			throw new ParamException("key not null");
+		}
+		if (conf.getValue() == null) {
+			throw new ParamException("value not null");
+		}
 		if (StringUtils.isBlank(conf.getDesc())) {
 			throw new ParamException("desc not null");
 		}
-		Conf newConf = confService.get(conf.getId());
-		newConf.setDesc(conf.getDesc());
-		confService.save(newConf);
+		conf.setModifyDate(new Date());
+		confService.save(conf);
 		return ResponseData.ok();
 	}
 }

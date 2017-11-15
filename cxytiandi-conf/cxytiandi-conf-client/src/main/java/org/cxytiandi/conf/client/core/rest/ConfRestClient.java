@@ -143,16 +143,16 @@ public class ConfRestClient {
 		return false;
 	}
 	
-	public boolean updateDesc(Conf conf) {
+	public boolean update(Conf conf) {
 		List<String> restApiUrls = getRestApiServers();
 		for (String base : restApiUrls) {
 			try {
 				HttpHeaders requestHeaders = new HttpHeaders();
 			    requestHeaders.add("Authorization", CommonUtil.getRestApiToken());
 			    HttpEntity<Conf> requestEntity = new HttpEntity<Conf>(conf, requestHeaders);
-			    return restTemplate.exchange(base + "/rest/conf/update/desc", HttpMethod.POST, requestEntity, ResponseDatas.class).getBody().getStatus();
+			    return restTemplate.exchange(base + "/rest/conf/update", HttpMethod.POST, requestEntity, ResponseDatas.class).getBody().getStatus();
 			} catch (Exception e) {
-				LOGGER.error(base + " updateDesc error", e);
+				LOGGER.error(base + " update error", e);
 			}
 		}
 		return false;

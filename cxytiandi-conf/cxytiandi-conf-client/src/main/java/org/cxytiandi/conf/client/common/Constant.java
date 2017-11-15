@@ -72,5 +72,10 @@ public final class Constant {
 	 * 获取本地配置数据状态（local只加载本地默认配置  remote加载配置中心配置）
 	 */
 	public static final String DATA_STATUS = "smconf.data.status";
+
+	/**
+	 * 获取是否覆盖配置中心的配置状态（true覆盖  false不覆盖）
+	 */
+	public static final String OVERWRITE_STATUS = "smconf.overwrite.status";
 	
 }
