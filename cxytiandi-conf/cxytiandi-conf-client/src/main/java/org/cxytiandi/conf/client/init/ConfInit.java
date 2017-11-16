@@ -217,7 +217,31 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
 		Map<String, Object> beanMap = ctx.getBeansWithAnnotation(CxytianDiConf.class);
 		check(beanMap);
-		init(beanMap, true);
+		// 优化，之前重新初始化到spring中需要重新去配置中心请求一次数据，先改成从本地获取，有可能在启动之前已经初始化一次了
+		// 可以通过设置 System.setProperty("smconf.conf.package", "com.fangjia.fsh.api.config"); 来决定是否启动加载数据
+		try {
+			if (beanMap != null && !beanMap.isEmpty()) {
+				for (Object confBean : beanMap.values()) {
+					String className = confBean.getClass().getName();
+					Object oldBean = localConfDataMap.get(className);
+					if (oldBean != null) {
+						Field[] fieds = confBean.getClass().getDeclaredFields();
+						for (Field field : fieds) {
+							field.setAccessible(true);
+							String key = field.getName();
+							Object value = ReflectUtils.callGetMethod(key, oldBean);
+							CommonUtil.setValue(field, confBean, value);
+						}
+						localConfDataMap.put(className, confBean);
+					} else {
+						// 初始化配置属性到spring 容器中的bean,方便Autowired直接注入使用
+						init(beanMap, true);
+					}
+				}
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 }

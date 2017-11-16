@@ -26,7 +26,7 @@ public class SmconfInit {
 			}
 			
 			confInit.check(beanMap);
-			confInit.init(beanMap, false);
+			confInit.init(beanMap, true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
