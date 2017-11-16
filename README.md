@@ -73,7 +73,7 @@ public static void main(String[] args) {
 	//启动时需要配置来做连接，需要在spring启动前将一些配置信息加载到环境变量使用
 	//com.fangjia.ld.service.config是你的配置所在的包
 	SmconfInit.init("com.fangjia.ld.service.config");
-	// 1.1中可以使用 System.setProperty("smconf.conf.package", "com.fangjia.fsh.api.config");来代替上面的init
+	// 1.1中可以使用 System.setProperty("smconf.conf.package", "com.fangjia.ld.service.config");来代替上面的init
 	
 	new SpringApplicationBuilder().sources(LdApplication.class).web(false).run(args);
         try {
