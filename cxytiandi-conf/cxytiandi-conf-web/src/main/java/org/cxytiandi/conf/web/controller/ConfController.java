@@ -11,9 +11,11 @@ import org.cxytiandi.conf.client.common.Constant;
 import org.cxytiandi.conf.client.common.EnvConstants;
 import org.cxytiandi.conf.client.util.CommonUtil;
 import org.cxytiandi.conf.web.common.LoginUserInfoUtils;
+import org.cxytiandi.conf.web.common.ResponseData;
 import org.cxytiandi.conf.web.domain.Conf;
 import org.cxytiandi.conf.web.domain.UpdateLog;
 import org.cxytiandi.conf.web.model.ConfModel;
+import org.cxytiandi.conf.web.model.NodeInfo;
 import org.cxytiandi.conf.web.service.ConfService;
 import org.cxytiandi.conf.web.service.UpdateLogService;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
@@ -94,7 +97,7 @@ public class ConfController {
 	 */
 	@PostMapping("/conf/update")
 	@ResponseBody
-	public Object update(String id, String value, String desc) {
+	public Object update(String id, String value, String desc, HttpServletRequest request) {
 		Object oldValue;
 		Conf conf = confService.get(id);
 		oldValue = conf.getValue();
@@ -107,7 +110,7 @@ public class ConfController {
 				.updateTime(new Date())
 				.oldValue(oldValue)
 				.newValue(value)
-				.username("yinjihuan")
+				.username(request.getSession().getAttribute("login_user_name").toString())
 				.updateDesc(desc).build();
 		updateLogService.save(log);
 		
@@ -135,5 +138,30 @@ public class ConfController {
 	public Object remove(String id) {
 		confService.remove(id);
 		return "success";
+	}
+	
+	/**
+	 * 推送配置信息到指定的节点
+	 * @param nodes
+	 * @return
+	 */
+	@PostMapping("/conf/push")
+	@ResponseBody
+	public Object pushConf(@RequestBody List<NodeInfo> nodes) {
+		if (nodes != null) {
+			for (NodeInfo node : nodes) {
+				Conf conf = confService.get(node.getConfValue());
+				//修改zk中的节点的值，告诉客户端值有修改
+				List<String> clients = CommonUtil.getZkClient().getClientServers(conf.getEnv(), conf.getSystemName());
+				for (String client : clients) {
+					if (client.split("&")[0].equals(node.getValue()) && client.split("&")[1].equals(conf.getConfFileName())) {
+						CommonUtil.getZkClient().setValue(
+								CommonUtil.buildPath(Constant.ZK_ROOT_PATH, conf.getEnv(), 
+										conf.getSystemName(), client), conf.getValue());
+					}
+				}
+			}
+		}
+		return ResponseData.ok();
 	}
 }

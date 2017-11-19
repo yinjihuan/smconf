@@ -8,6 +8,7 @@
   <style>
     .value_td,.delete {cursor:pointer;}
     .value_desc,.value_inp {width:300px;}
+    #push_win ul li{list-style:none;border:2px solid #3c8dbc;border-left:6px solid #3c8dbc;width:260px;float:left;padding:10px;margin-left:10px;margin-top:10px;}
   </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -80,6 +81,7 @@
 			                				<#if bo.nodes??>
 		                						<#list bo.nodes as n>
 		                							${n!}<br/>
+		                							<input type="hidden" class="node${bo.id!}" value="${n!}"/>
 		                						</#list>
 		                					</#if>
 		                				</div>
@@ -87,12 +89,15 @@
 		                			<td style="height: 20px;">${bo.createDate?datetime!}</td>
 		                			<td style="height: 20px;">${bo.modifyDate?datetime!}</td>
 		                			<td style="height: 20px;">
+		                				<a target="_blank" href="logs/${bo.id!}">历史</a>&nbsp;&nbsp;
 		                				<#if (bo.nodes??) && bo.nodes?size gt 0>
-		                					<a href="javascript:layer.alert('有节点订阅不能删除');" style="color:#ccc;">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
+		                					<a href="javascript:layer.alert('有节点订阅不能删除');" style="color:#ccc;">删除</a>&nbsp;&nbsp;
+		                					<a class="push" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}">推送</a>
 		                				<#else>
-		                				   <a class="delete" data-id="${bo.id!}">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
+		                				   <a href="javascript:layer.alert('无节点订阅不能推送');" style="color:#ccc;">推送</a>
+		                				   <a class="delete" data-id="${bo.id!}">删除</a>&nbsp;&nbsp;
 		                				</#if>
-		                				<a target="_blank" href="logs/${bo.id!}">历史</a>
+		                				<a style="cursor:pointer;">编辑</a>&nbsp;&nbsp;
 		                			</td>
 		                		</tr>
 	                		</#list>
@@ -118,6 +123,21 @@
       </div>
     </section>
   </div>
+</div>
+
+<div id="push_win" style="display:none;">
+	<div style="margin:10px;">
+		<input type="hidden" id="confValue"/>
+		<input type="checkbox" style="margin-left:38px;" checked="checked" class="check_all"/>全选
+	</div>
+	<div>
+		<ul>
+			
+		</ul>
+	</div>
+	<div style="text-align:center;">
+			<input type="button" value="推送" id="push_btn" class="btn btn-primary" style="margin-top:20px;margin-bottom:20px;"/>
+	</div>
 </div>
 <script>
 	$(".value_td").click(function(){
@@ -185,6 +205,63 @@
 		//node.parent().parent().find("p").html(value);
 		node.parent().parent().find("p").css("display","block");
 		node.parent().find(".value_desc").val("");
+	});
+	
+	// 打开推送配置窗口
+	$(".push").click(function(){
+		$("#push_win ul li").remove();
+		var cid = $(this).attr("data-id");
+		$("#confValue").val(cid);
+		$(".node"+cid).each(function(i, o){
+			$("#push_win ul").append("<li><input name='node_chk' type='checkbox' checked='checked' value='"+$(o).val()+"'/>"+$(o).val()+"</li>");
+		});
+		layer.open({
+		  type: 1,
+		  title: "推送配置信息",
+		  closeBtn: 1,
+		  area: ['630px', '400px'],
+		  shadeClose: true,
+		  content: $('#push_win')
+		});
+	});
+	
+	// 推送配置全选
+	$(".check_all").click(function(){
+		if(this.checked){ 
+			$("#push_win [name=node_chk]").prop("checked", "checked");
+		}else{ 
+			$("#push_win [name=node_chk]").removeAttr("checked");
+		} 
+	});
+	
+	// 推送确认按钮
+	$("#push_btn").click(function(){
+		var confValue = $("#confValue").val();
+		var size = $("#push_win [name=node_chk]:checked").size();
+		if (size == 0) {
+			layer.alert('请选择要推送的节点信息!')
+			return;
+		}
+		var datas = new Array();
+		$("#push_win [name=node_chk]:checked").each(function(i,o){
+			datas.push({"value":$(o).val(),"confValue":confValue});
+		});
+		$.ajax({
+		    url:"../conf/push",
+	        method:'POST',
+	        contentType: "application/json",  
+            dataType: "json", 
+			data:JSON.stringify(datas),
+			success:function () {
+				layer.alert('推送成功!',function(){
+					layer.closeAll();
+				});
+				
+	        },
+			error:function () {
+				layer.alert('推送失败,请重试!')
+	        }
+		});
 	});
 </script>
 </body>
