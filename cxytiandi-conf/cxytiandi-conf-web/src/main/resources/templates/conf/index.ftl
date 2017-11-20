@@ -93,12 +93,14 @@
 		                				<a target="_blank" href="logs/${bo.id!}">历史</a>&nbsp;&nbsp;
 		                				<#if (bo.nodes??) && bo.nodes?size gt 0>
 		                					<a href="javascript:layer.alert('有节点订阅不能删除');" style="color:#ccc;">删除</a>&nbsp;&nbsp;
-		                					<a class="push" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}">推送</a>&nbsp;&nbsp;
+		                					<a class="push" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}" 
+		                						data-system="${bo.systemName!}" data-filename="${bo.confFileName!}" data-key="${bo.key!}">推送</a>&nbsp;&nbsp;
 		                				<#else>
 		                				    <a class="delete" data-id="${bo.id!}">删除</a>&nbsp;&nbsp;
                                             <a href="javascript:layer.alert('无节点订阅不能推送');" style="color:#ccc;">推送</a>&nbsp;&nbsp;
 		                				</#if>
-		                				<a class="edit_conf" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}">编辑</a>&nbsp;&nbsp;
+		                				<a class="edit_conf" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}"
+		                				data-system="${bo.systemName!}" data-filename="${bo.confFileName!}" data-key="${bo.key!}">编辑</a>&nbsp;&nbsp;
 		                			</td>
 		                		</tr>
 	                		</#list>
@@ -127,6 +129,9 @@
 </div>
 
 <div id="push_win" style="display:none;">
+	<div style="margin:10px;margin-left:48px;">
+        <span class="system_span"></span> > <span class="filename_span"></span> > <span class="key_span"></span> > <span class="value_span"></span>
+    </div>
 	<div style="margin:10px;">
 		<input type="hidden" id="confId"/>
 		<input type="checkbox" style="margin-left:38px;" checked="checked" class="check_all"/>全选
@@ -142,15 +147,18 @@
 </div>
 
 <div id="edit_win" style="display:none;">
-    <div style="margin:10px;">
-        <input type="checkbox" style="margin-left:38px;" checked="checked" class="edit_check_all"/>全选
+	<div style="margin:10px;margin-left:48px;">
+        <span class="system_span"></span> > <span class="filename_span"></span> > <span class="key_span"></span>
     </div>
 	<div>
         <textarea style="margin-left:48px;" class="value_inp" rows="8"></textarea>
 	</div>
 	<div>
-        <input style="margin-left:48px;" class="value_desc" placeholder="修改备注"/>
+        <input style="margin-left:48px;margin-top:10px;" class="value_desc" placeholder="修改备注"/>
 	</div>
+	<div>
+        <input type="checkbox" style="margin-left:48px;margin-top:10px;" checked="checked" class="edit_check_all"/>全选
+    </div>
     <div>
         <ul>
 
@@ -234,6 +242,10 @@
 		$("#push_win ul li").remove();
 		var cid = $(this).attr("data-id");
 		$("#confId").val(cid);
+		$("#push_win .system_span").html($(this).attr("data-system"));
+		$("#push_win .filename_span").html($(this).attr("data-filename"));
+		$("#push_win .key_span").html($(this).attr("data-key"));
+		$("#push_win .value_span").html($(this).attr("data-val"));
 		$(".node"+cid).each(function(i, o){
 			$("#push_win ul").append("<li><input name='node_chk' type='checkbox' checked='checked' value='"+$(o).val()+"'/>"+$(o).val()+"</li>");
 		});
@@ -302,6 +314,9 @@
         $("#confId").val(cid);
         var value = $(this).attr("data-val");
         $("#edit_win .value_inp").val(value);
+        $("#edit_win .system_span").html($(this).attr("data-system"));
+		$("#edit_win .filename_span").html($(this).attr("data-filename"));
+		$("#edit_win .key_span").html($(this).attr("data-key"));
         $(".node"+cid).each(function(i, o){
             $("#edit_win ul").append("<li><input name='node_chk' type='checkbox' checked='checked' value='"+$(o).val()+"'/>"+$(o).val()+"</li>");
         });
@@ -309,7 +324,7 @@
             type: 1,
             title: "修改配置信息",
             closeBtn: 1,
-            area: ['630px', '400px'],
+            area: ['630px', '500px'],
             shadeClose: true,
             content: $('#edit_win')
         });
