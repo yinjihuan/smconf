@@ -27,6 +27,8 @@ Smconf专注于分布式环境下配置的统一管理
 ![配置修改](https://github.com/yinjihuan/smconf/blob/master/images/update.png) 
  --
 ![配置历史记录](https://github.com/yinjihuan/smconf/blob/master/images/history.png) 
+ --
+![配置推送](https://github.com/yinjihuan/smconf/blob/master/images/push.png) 
 # 作者
 - 尹吉欢 1304489315@qq.com
 - 博客 http://cxytiandi.com/blogs/yinjihuan
@@ -73,7 +75,7 @@ public static void main(String[] args) {
 	//启动时需要配置来做连接，需要在spring启动前将一些配置信息加载到环境变量使用
 	//com.fangjia.ld.service.config是你的配置所在的包
 	SmconfInit.init("com.fangjia.ld.service.config");
-	// 1.1中可以使用 System.setProperty("smconf.conf.package", "com.fangjia.ld.service.config");来代替上面的init
+	//也可以使用 System.setProperty("smconf.conf.package", "com.fangjia.ld.service.config");来代替上面的init
 	
 	new SpringApplicationBuilder().sources(LdApplication.class).web(false).run(args);
         try {
