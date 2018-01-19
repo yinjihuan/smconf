@@ -97,34 +97,43 @@ public class ConfController {
 	 */
 	@PostMapping("/conf/update")
 	@ResponseBody
-	public Object update(String id, String value, String desc, HttpServletRequest request) {
-		Object oldValue;
-		Conf conf = confService.get(id);
-		oldValue = conf.getValue();
-		conf.setValue(value);
-		conf.setModifyDate(new Date());
-		confService.save(conf);
-		
-		//添加修改日志
-		UpdateLog log = UpdateLog.builder().updateObjId(id)
-				.updateTime(new Date())
-				.oldValue(oldValue)
-				.newValue(value)
-				.username(request.getSession().getAttribute("login_user_name").toString())
-				.updateDesc(desc).build();
-		updateLogService.save(log);
-		
-		//修改zk中的节点的值，告诉客户端值有修改
-		List<String> clients = CommonUtil.getZkClient().getClientServers(conf.getEnv(), conf.getSystemName());
-		for (String client : clients) {
-			if (client.split("&")[1].equals(conf.getConfFileName())) {
-				CommonUtil.getZkClient().setValue(
-						CommonUtil.buildPath(Constant.ZK_ROOT_PATH, conf.getEnv(), 
-								conf.getSystemName(), client), value);
+	public Object update(@RequestBody List<NodeInfo> nodes, HttpServletRequest request) {
+		if (nodes != null) {
+			for (NodeInfo node : nodes) {
+				Object oldValue;
+				Conf conf = confService.get(node.getId());
+				oldValue = conf.getValue();
+				conf.setValue(node.getValue());
+				conf.setModifyDate(new Date());
+				confService.save(conf);
+				
+				//添加修改日志
+				UpdateLog log = UpdateLog.builder().updateObjId(node.getId())
+						.updateTime(new Date())
+						.oldValue(oldValue)
+						.newValue(node.getValue())
+						.username(request.getSession().getAttribute("login_user_name").toString())
+						.updateDesc(node.getDesc()).build();
+				updateLogService.save(log);
+				// 值是根据推送节点传来的，只需要修改一次即可，推送就根据节点数量来
+				break;
+			}
+			
+			for (NodeInfo node : nodes) {
+				Conf conf = confService.get(node.getId());
+				//修改zk中的节点的值，告诉客户端值有修改
+				List<String> clients = CommonUtil.getZkClient().getClientServers(conf.getEnv(), conf.getSystemName());
+				for (String client : clients) {
+					if (client.split("&")[0].equals(node.getNode()) && client.split("&")[1].equals(conf.getConfFileName())) {
+						CommonUtil.getZkClient().setValue(
+								CommonUtil.buildPath(Constant.ZK_ROOT_PATH, conf.getEnv(), 
+										conf.getSystemName(), client), conf.getValue());
+					}
+				}
 			}
 		}
 		
-		return "success";
+		return ResponseData.ok();
 	}
 	
 	/**
@@ -150,11 +159,11 @@ public class ConfController {
 	public Object pushConf(@RequestBody List<NodeInfo> nodes) {
 		if (nodes != null) {
 			for (NodeInfo node : nodes) {
-				Conf conf = confService.get(node.getConfValue());
+				Conf conf = confService.get(node.getId());
 				//修改zk中的节点的值，告诉客户端值有修改
 				List<String> clients = CommonUtil.getZkClient().getClientServers(conf.getEnv(), conf.getSystemName());
 				for (String client : clients) {
-					if (client.split("&")[0].equals(node.getValue()) && client.split("&")[1].equals(conf.getConfFileName())) {
+					if (client.split("&")[0].equals(node.getNode()) && client.split("&")[1].equals(conf.getConfFileName())) {
 						CommonUtil.getZkClient().setValue(
 								CommonUtil.buildPath(Constant.ZK_ROOT_PATH, conf.getEnv(), 
 										conf.getSystemName(), client), conf.getValue());

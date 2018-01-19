@@ -7,8 +7,9 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <style>
     .value_td,.delete {cursor:pointer;}
-    .value_desc,.value_inp {width:300px;}
+    .value_desc,.value_inp {width:540px;}
     #push_win ul li{list-style:none;border:2px solid #3c8dbc;border-left:6px solid #3c8dbc;width:260px;float:left;padding:10px;margin-left:10px;margin-top:10px;}
+    #edit_win ul li{list-style:none;border:2px solid #3c8dbc;border-left:6px solid #3c8dbc;width:260px;float:left;padding:10px;margin-left:10px;margin-top:10px;}
   </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -92,12 +93,14 @@
 		                				<a target="_blank" href="logs/${bo.id!}">历史</a>&nbsp;&nbsp;
 		                				<#if (bo.nodes??) && bo.nodes?size gt 0>
 		                					<a href="javascript:layer.alert('有节点订阅不能删除');" style="color:#ccc;">删除</a>&nbsp;&nbsp;
-		                					<a class="push" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}">推送</a>
+		                					<a class="push" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}" 
+		                						data-system="${bo.systemName!}" data-filename="${bo.confFileName!}" data-key="${bo.key!}">推送</a>&nbsp;&nbsp;
 		                				<#else>
-		                				   <a href="javascript:layer.alert('无节点订阅不能推送');" style="color:#ccc;">推送</a>
-		                				   <a class="delete" data-id="${bo.id!}">删除</a>&nbsp;&nbsp;
+		                				    <a class="delete" data-id="${bo.id!}">删除</a>&nbsp;&nbsp;
+                                            <a href="javascript:layer.alert('无节点订阅不能推送');" style="color:#ccc;">推送</a>&nbsp;&nbsp;
 		                				</#if>
-		                				<a style="cursor:pointer;">编辑</a>&nbsp;&nbsp;
+		                				<a class="edit_conf" style="cursor:pointer;" data-id="${bo.id!}" data-val="${bo.value!}"
+		                				data-system="${bo.systemName!}" data-filename="${bo.confFileName!}" data-key="${bo.key!}">编辑</a>&nbsp;&nbsp;
 		                			</td>
 		                		</tr>
 	                		</#list>
@@ -126,8 +129,11 @@
 </div>
 
 <div id="push_win" style="display:none;">
+	<div style="margin:10px;margin-left:48px;">
+        <span class="system_span"></span> > <span class="filename_span"></span> > <span class="key_span"></span> > <span class="value_span"></span>
+    </div>
 	<div style="margin:10px;">
-		<input type="hidden" id="confValue"/>
+		<input type="hidden" id="confId"/>
 		<input type="checkbox" style="margin-left:38px;" checked="checked" class="check_all"/>全选
 	</div>
 	<div>
@@ -139,8 +145,32 @@
 			<input type="button" value="推送" id="push_btn" class="btn btn-primary" style="margin-top:20px;margin-bottom:20px;"/>
 	</div>
 </div>
+
+<div id="edit_win" style="display:none;">
+	<div style="margin:10px;margin-left:48px;">
+        <span class="system_span"></span> > <span class="filename_span"></span> > <span class="key_span"></span>
+    </div>
+	<div>
+        <textarea style="margin-left:48px;" class="value_inp" rows="8"></textarea>
+	</div>
+	<div>
+        <input style="margin-left:48px;margin-top:10px;" class="value_desc" placeholder="修改备注"/>
+	</div>
+	<div>
+        <input type="checkbox" style="margin-left:48px;margin-top:10px;" checked="checked" class="edit_check_all"/>全选
+    </div>
+    <div>
+        <ul>
+
+        </ul>
+    </div>
+    <div style="text-align:center;">
+        <input type="button" value="修改" id="push_btn" class="btn btn-primary save_btn" style="margin-top:20px;margin-bottom:20px;"/>
+    </div>
+</div>
+
 <script>
-	$(".value_td").click(function(){
+	/**$(".value_td").click(function(){
 		$(this).find("div").css("display","block");
 		$(this).find("p").css("display","none");
 		$(this).attr("status", "1");
@@ -179,7 +209,7 @@
 		});
 		
 	});
-	
+	**/
 	
 	$(".delete").click(function(){
 		var node = $(this);
@@ -211,7 +241,11 @@
 	$(".push").click(function(){
 		$("#push_win ul li").remove();
 		var cid = $(this).attr("data-id");
-		$("#confValue").val(cid);
+		$("#confId").val(cid);
+		$("#push_win .system_span").html($(this).attr("data-system"));
+		$("#push_win .filename_span").html($(this).attr("data-filename"));
+		$("#push_win .key_span").html($(this).attr("data-key"));
+		$("#push_win .value_span").html($(this).attr("data-val"));
 		$(".node"+cid).each(function(i, o){
 			$("#push_win ul").append("<li><input name='node_chk' type='checkbox' checked='checked' value='"+$(o).val()+"'/>"+$(o).val()+"</li>");
 		});
@@ -234,9 +268,18 @@
 		} 
 	});
 	
+	// 修改配置全选
+	$(".edit_check_all").click(function(){
+		if(this.checked){ 
+			$("#edit_win [name=node_chk]").prop("checked", "checked");
+		}else{ 
+			$("#edit_win [name=node_chk]").removeAttr("checked");
+		} 
+	});
+	
 	// 推送确认按钮
 	$("#push_btn").click(function(){
-		var confValue = $("#confValue").val();
+		var confId = $("#confId").val();
 		var size = $("#push_win [name=node_chk]:checked").size();
 		if (size == 0) {
 			layer.alert('请选择要推送的节点信息!')
@@ -244,7 +287,7 @@
 		}
 		var datas = new Array();
 		$("#push_win [name=node_chk]:checked").each(function(i,o){
-			datas.push({"value":$(o).val(),"confValue":confValue});
+			datas.push({"node":$(o).val(),"id":confId});
 		});
 		$.ajax({
 		    url:"../conf/push",
@@ -262,6 +305,69 @@
 				layer.alert('推送失败,请重试!')
 	        }
 		});
+	});
+
+	// 打开编辑窗口
+	$(".edit_conf").click(function () {
+        $("#edit_win ul li").remove();
+        var cid = $(this).attr("data-id");
+        $("#confId").val(cid);
+        var value = $(this).attr("data-val");
+        $("#edit_win .value_inp").val(value);
+        $("#edit_win .system_span").html($(this).attr("data-system"));
+		$("#edit_win .filename_span").html($(this).attr("data-filename"));
+		$("#edit_win .key_span").html($(this).attr("data-key"));
+        $(".node"+cid).each(function(i, o){
+            $("#edit_win ul").append("<li><input name='node_chk' type='checkbox' checked='checked' value='"+$(o).val()+"'/>"+$(o).val()+"</li>");
+        });
+        layer.open({
+            type: 1,
+            title: "修改配置信息",
+            closeBtn: 1,
+            area: ['630px', '500px'],
+            shadeClose: true,
+            content: $('#edit_win')
+        });
+    });
+    
+    $(".save_btn").click(function(){
+		var node = $(this);
+		var value =  $("#edit_win .value_inp").val();
+		var desc = $("#edit_win .value_desc").val();
+		if (value == "") {
+			layer.alert("值不能为空");
+			return false;
+		}
+		if (desc == "") {
+			layer.alert("修改备注不能为空");
+			return false;
+		}
+		var confId = $("#confId").val();
+		var size = $("#edit_win [name=node_chk]:checked").size();
+		if (size == 0) {
+			layer.alert('请选择要推送的节点信息!')
+			return;
+		}
+		var datas = new Array();
+		$("#edit_win [name=node_chk]:checked").each(function(i,o){
+			datas.push({"node":$(o).val(),"id":confId,value:value, desc:desc});
+		});
+		$.ajax({
+		    url:"../conf/update",
+	        method:'POST',
+			contentType: "application/json",  
+            dataType: "json", 
+			data:JSON.stringify(datas),
+			success:function () {
+				layer.alert('修改成功!',function(){
+					window.location.reload();
+				});
+	        },
+			error:function () {
+				layer.alert('修改失败,请重试!')
+	        }
+		});
+		
 	});
 </script>
 </body>
