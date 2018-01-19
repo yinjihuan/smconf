@@ -124,7 +124,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
             	String prefix = cxytianDiConf.prefix();
             	boolean env = cxytianDiConf.env();
             	
-            	if (isRegWatchNode) {
+            	if (isRegWatchNode && CommonUtil.getLocalDataStatus().equals("remote")) {
             		//初始化需要监控的节点，一个配置文件一个节点
                 	String localIp = CommonUtil.getLocalIp() + ":" + CommonUtil.getServerPort();
                 	ZkClient zkClient = CommonUtil.getZkClient();
