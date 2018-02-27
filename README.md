@@ -79,7 +79,8 @@ public static void main(String[] args) {
 	//com.fangjia.ld.service.config是你的配置所在的包
 	SmconfInit.init("com.fangjia.ld.service.config");
 	//也可以使用 System.setProperty("smconf.conf.package", "com.fangjia.ld.service.config");来代替上面的init
-	
+	//也可以在application.properties中配置smconf.conf.package=com.fangjia.ld.service.config来代替上面的init
+
 	new SpringApplicationBuilder().sources(LdApplication.class).web(false).run(args);
         try {
         	new CountDownLatch(1).await();
