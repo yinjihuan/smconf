@@ -16,6 +16,7 @@ Smconf专注于分布式环境下配置的统一管理
 - 支持用户自定义配置修改回调接口做扩展
 - 支持手动触发推送配置到指定的节点
 - 修改配置可以选择推送的节点，可用于做灰度发布测试
+- 配置的历史修改记录
 # 文档
 - http://cxytiandi.com/blog/user/1/tag/smconf/1
 
@@ -78,7 +79,8 @@ public static void main(String[] args) {
 	//com.fangjia.ld.service.config是你的配置所在的包
 	SmconfInit.init("com.fangjia.ld.service.config");
 	//也可以使用 System.setProperty("smconf.conf.package", "com.fangjia.ld.service.config");来代替上面的init
-	
+	//也可以在application.properties中配置smconf.conf.package=com.fangjia.ld.service.config来代替上面的init
+
 	new SpringApplicationBuilder().sources(LdApplication.class).web(false).run(args);
         try {
         	new CountDownLatch(1).await();
