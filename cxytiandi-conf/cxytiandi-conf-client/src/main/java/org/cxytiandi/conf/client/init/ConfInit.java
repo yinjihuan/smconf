@@ -42,6 +42,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	 * value:类的实例
 	 */
 	private static Map<String, Object> localConfDataMap = new ConcurrentHashMap<String, Object>();
+	
 	/**
 	 * 存储配置信息的key对应的bean
 	 * key:/cxytiandi_conf/env/system/confFileName

@@ -78,4 +78,9 @@ public final class Constant {
 	 */
 	public static final String OVERWRITE_STATUS = "smconf.overwrite.status";
 	
+	/**
+	 * 配置所在包路径，多个用逗号隔开
+	 */
+	public static final String CONF_PACKAGES = "smconf.conf.package";
+	
 }

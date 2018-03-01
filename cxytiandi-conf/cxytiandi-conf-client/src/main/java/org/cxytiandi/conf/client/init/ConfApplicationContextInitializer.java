@@ -1,9 +1,8 @@
 package org.cxytiandi.conf.client.init;
 
+import org.cxytiandi.conf.client.util.CommonUtil;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.util.StringUtils;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -16,11 +15,8 @@ public class ConfApplicationContextInitializer implements ApplicationContextInit
     private static AtomicBoolean acBoolean = new AtomicBoolean(false);
     public void initialize(ConfigurableApplicationContext applicationContext) {
         if (acBoolean.compareAndSet(false, true)) {
-            //启动时需要配置来做连接，需要在spring启动前将一些配置信息加载到环境变量使用
-            String pack = System.getProperty("smconf.conf.package");
-            if (StringUtils.hasText(pack)) {
-                SmconfInit.init(pack);
-            }
+            //启动时需要配置来做连接，需要在spring启动前将一些配置信息加载到环境变量使用,多个包用逗号隔开
+            SmconfInit.init(CommonUtil.getConfPackagePaths());
         }
     }
 }

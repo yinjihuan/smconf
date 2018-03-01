@@ -197,4 +197,24 @@ public class CommonUtil {
 		}
 		return "remote";
 	}
+	
+	/**
+	 * 获取配置所在包路径，多个用逗号隔开
+	 * @author yinjihuan
+	 * @return
+	 */
+	public static String getConfPackagePaths() {
+		String value = System.getProperty(Constant.CONF_PACKAGES);
+		if (StringUtils.hasText(value)) {
+			return value;
+		}
+		
+		value = ProUtils.getProperty(Constant.CONF_PACKAGES);
+		if (StringUtils.hasText(value)) {
+			return value;
+		}
+		
+		return "com";
+	}
+	
 }
