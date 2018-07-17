@@ -23,6 +23,7 @@ public final class Constant {
 			"java.lang.Long", 
 			"java.lang.Double", 
 			"java.lang.Integer",
+			"java.util.Map", "map",
 			"int", "long", "double");
 	
 	/**

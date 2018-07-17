@@ -143,6 +143,7 @@ public class ClassReadUtils {
 	private static Class<?> loadClass(String fullClzName) {
 		
 		try {
+			if (fullClzName.startsWith("com.mongodb")) return null;
 			return Thread.currentThread().getContextClassLoader().loadClass(fullClzName);
 		} catch (ClassNotFoundException e) {
 			System.err.println(fullClzName);

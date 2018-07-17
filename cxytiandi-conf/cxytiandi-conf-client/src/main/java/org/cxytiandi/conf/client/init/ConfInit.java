@@ -1,12 +1,14 @@
 package org.cxytiandi.conf.client.init;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.zookeeper.CreateMode;
 import org.cxytiandi.conf.client.annotation.ConfField;
 import org.cxytiandi.conf.client.annotation.CxytianDiConf;
 import org.cxytiandi.conf.client.common.Constant;
+import org.cxytiandi.conf.client.common.JsonUtils;
 import org.cxytiandi.conf.client.core.RefreshConfCallBackImpl;
 import org.cxytiandi.conf.client.core.rest.Conf;
 import org.cxytiandi.conf.client.core.rest.ConfRestClient;
@@ -113,7 +115,13 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
         }
 	}
 	
-	public void init(Map<String, Object> beanMap, boolean isRegWatchNode) {
+	public void init(Object conf) {
+		Map<String, Object> beanMap = new HashMap<String, Object>();
+		beanMap.put("conf", conf);
+		init(beanMap, false, true);
+	}
+	
+	public void init(Map<String, Object> beanMap, boolean isRegWatchNode, boolean overwrite) {
 		
         if (beanMap != null && !beanMap.isEmpty()) {
             for (Object confBean : beanMap.values()) {
@@ -151,7 +159,7 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 					if (CommonUtil.getLocalDataStatus().equals("local")) {
 						initLocalConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
 					} else {
-						initConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".");
+						initConf(conf, field, confBean, env, prefix.equals("") ? "" : prefix + ".", overwrite);
 					}
 				}
             	
@@ -175,7 +183,13 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 		}
 	}
 	
-	private void initConf(Conf conf, Field field, Object obj, boolean env, String prefix) {
+	private void convertValue(Conf conf) {
+		if (conf.getValue() instanceof Map) {
+			conf.setValue(JsonUtils.toJson(conf.getValue()).replaceAll("\"", "'"));
+		}
+	}
+	
+	private void initConf(Conf conf, Field field, Object obj, boolean env, String prefix, boolean overwrite) {
         ConfRestClient confRestClient = CommonUtil.getConfRestClient();
 	    try {
 	    	Conf result = confRestClient.get(conf.getEnv(), conf.getSystemName(), conf.getConfFileName(), conf.getKey());
@@ -183,19 +197,21 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 	          	if (env) {
 	          		System.setProperty(prefix + conf.getKey(), conf.getValue().toString());
 	  			}
+	          	convertValue(conf);
 	          	confRestClient.save(conf);
 	            LOGGER.info("save conf to db " + conf.toString());
 	  		} else {
 	  			if (env) {
 	  				System.setProperty(prefix + conf.getKey(), result.getValue().toString());
 	  			}
-	  			CommonUtil.setValue(field, obj, result.getValue());
 	  			// 是否覆盖远程配置
-	  			if (CommonUtil.getConfOverwrite()) {
+	  			if (overwrite) {
 					result.setDesc(conf.getDesc());
 					result.setValue(conf.getValue());
+					convertValue(result);
 					confRestClient.update(result);
 				}
+	  			CommonUtil.setValue(field, obj, result.getValue());
 	  		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -231,12 +247,17 @@ public class ConfInit implements ApplicationContextAware, InitializingBean {
 							field.setAccessible(true);
 							String key = field.getName();
 							Object value = ReflectUtils.callGetMethod(key, oldBean);
-							CommonUtil.setValue(field, confBean, value);
+							if (value instanceof Map) {
+								CommonUtil.setValue(field, confBean, JsonUtils.toJson(value).replaceAll("\"", "'"));
+							} else {
+								CommonUtil.setValue(field, confBean, value);
+							}
+							
 						}
 						localConfDataMap.put(className, confBean);
 					} else {
 						// 初始化配置属性到spring 容器中的bean,方便Autowired直接注入使用
-						init(beanMap, true);
+						init(beanMap, true, CommonUtil.getConfOverwrite());
 					}
 				}
 			}

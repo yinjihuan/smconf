@@ -70,7 +70,7 @@
 		                			<td style="height: 20px;width:300px;word-wrap:break-word;word-break:break-all;" class="value_td" status="0">
 		                				<p>${bo.value!}</p>
 		                				<div style="display:none;">
-		                					<input value="${bo.value!}" class="value_inp"/>
+		                					<input value='${bo.value!}' class="value_inp"/>
 		                					<input class="value_desc" placeholder="修改备注"/>
 		                					<input type="button" value="保存" class="save_btn" data-id="${bo.id!}"/>
 		                					<input type="button" value="取消" class="cancel_btn"/>

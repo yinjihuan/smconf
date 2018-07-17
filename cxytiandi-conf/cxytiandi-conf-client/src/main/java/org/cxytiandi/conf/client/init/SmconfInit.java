@@ -8,6 +8,7 @@ import java.util.Set;
 import org.cxytiandi.conf.client.annotation.CxytianDiConf;
 import org.cxytiandi.conf.client.util.ClassReadUtils;
 import org.cxytiandi.conf.client.util.ClasspathPackageScannerUtils;
+import org.cxytiandi.conf.client.util.CommonUtil;
 import org.springframework.util.StringUtils;
 
 /**
@@ -35,7 +36,7 @@ public class SmconfInit {
 				
 			}
 			confInit.check(beanMap);
-			confInit.init(beanMap, true);
+			confInit.init(beanMap, true, CommonUtil.getConfOverwrite());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

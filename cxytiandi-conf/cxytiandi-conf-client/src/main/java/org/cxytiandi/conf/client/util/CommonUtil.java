@@ -2,9 +2,11 @@ package org.cxytiandi.conf.client.util;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import org.cxytiandi.conf.client.common.Constant;
 import org.cxytiandi.conf.client.common.EnvConstants;
+import org.cxytiandi.conf.client.common.JsonUtils;
 import org.cxytiandi.conf.client.core.rest.ConfRestClient;
 import org.cxytiandi.conf.client.zk.ZkClient;
 import org.springframework.util.StringUtils;
@@ -157,6 +159,8 @@ public class CommonUtil {
 			field.set(bean, Long.parseLong(value.toString()));
 		} else if (field.getType().equals(Double.class) || field.getType().equals(double.class)) {
 			field.set(bean, Double.parseDouble(value.toString()));
+		} else if(field.getType().getName().equals("java.util.Map")) {
+			field.set(bean, JsonUtils.toBean(Map.class, value.toString().replaceAll("'", "\"")));
 		} else {
 			field.set(bean, value);
 		}
