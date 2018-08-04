@@ -218,7 +218,7 @@ public class CommonUtil {
 			return value;
 		}
 		
-		return "com";
+		return "com.cxytiandi";
 	}
 	
 }

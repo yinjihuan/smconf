@@ -23,7 +23,7 @@ public class SmconfInit {
 		Map<String, Object> beanMap = new HashMap<String, Object>();
 		try {
 			if (!StringUtils.hasText(basePackgaes)) {
-				basePackgaes = "com";
+				basePackgaes = "com.cxytiandi";
 			}
 			String[] packs = basePackgaes.split(",");
 			for (String pck : packs) {
